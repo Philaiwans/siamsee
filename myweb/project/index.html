@@ -1,329 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>เซียมซีเสี่ยงทาย</title>
-<style>
-  :root{
-    --bg:#800000;     /* แดงจีน */
-    --card:#a40000;   /* แดงเข้ม */
-    --muted:#fcd34d;  /* ทองหม่น */
-    --text:#fff8dc;   /* ครีม/ทองอ่อน */
-    --accent:#ffd700; /* ทองสด */
-    --good:#22c55e;
-    --mid:#f59e0b;
-    --bad:#ef4444;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:"TH Sarabun New","Sarabun",sans-serif;
-    background:radial-gradient(circle at center,#b91c1c 0%,var(--bg) 70%);
-    color:var(--text);
-    min-height:100svh;
-    display:grid;
-    place-items:center;
-    padding:24px;
-  }
-  .wrap{width:min(760px,95vw)}
-  .card{
-    background:linear-gradient(180deg,#b91c1c 0%,var(--card) 100%);
-    border:3px solid var(--accent);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:0 20px 60px rgba(0,0,0,.6);
-  }
-  h1{
-    margin:0 0 6px;
-    font-size:clamp(24px,3.4vw,36px);
-    color:var(--accent);
-    text-shadow:1px 1px 3px #000;
-  }
-  .muted{color:var(--muted);font-size:16px}
-  .section{
-    margin-top:16px;
-    border:2px dashed var(--accent);
-    border-radius:16px;
-    padding:16px;
-    background:rgba(255,255,255,.06);
-  }
-  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-  button{
-    appearance:none;border:0;cursor:pointer;
-    padding:12px 20px;border-radius:14px;font-weight:700;
-    background:linear-gradient(180deg,#ffd700,#f59e0b);
-    color:#600000;
-    font-size:16px;
-    transition:transform .06s,filter .2s;
-    box-shadow:0 4px 8px rgba(0,0,0,0.4);
-  }
-  button:hover{filter:brightness(1.1)}
-  button:active{transform:translateY(1px)}
-  .ghost{
-    background:transparent;
-    color:var(--muted);
-    border:2px solid var(--muted);
-  }
-  .title{
-    font-size:clamp(18px,2.8vw,22px);
-    font-weight:800;
-    display:flex;
-    gap:10px;
-    align-items:center;
-    color:var(--accent);
-  }
-  .badge{
-    font-size:14px;
-    padding:4px 10px;
-    border-radius:999px;
-    font-weight:700;
-    border:1px solid #0003;
-  }
-  .a01 {
-  text-align: center; /* จัดรูปให้อยู่กึ่งกลางแนวนอน */
-  margin-top: 200px;   /* เว้นระยะด้านบน */
-}
-
-.a01 img {
-  width: 460px;   /* ปรับตามขนาดที่ต้องการ */
-  display: block;
-  text-align: center; /* จัดรูปให้อยู่กึ่งกลางแนวนอน */
-  margin-top: -445px;
-  margin-left: auto;   /* ผลักไปทางขวา */
-  margin-right: auto;  /* ถ้าอยากกึ่งกลาง */
-}
-
-.a01 .text {
-             /* เว้นระยะใต้รูป */
-  font-size: 28px;
-  font-weight: bold;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px #000;
-  text-align: center;          /* กึ่งกลางข้อความ */
-  position: static;            /* ไม่ต้อง absolute */
-  transform: none;             /* ไม่ต้อง translate */
-  margin-top: -370px;
-}
-#----------------------------------------------------------------
-
-  .a01 {
-  text-align: center; /* จัดรูปให้อยู่กึ่งกลางแนวนอน */
-  margin-top: 200px;   /* เว้นระยะด้านบน */
-}
-
-.a01 img {
-  width: 460px;   /* ปรับตามขนาดที่ต้องการ */
-  display: block;
-  text-align: center; /* จัดรูปให้อยู่กึ่งกลางแนวนอน */
-  margin-top: -445px;
-  margin-left: auto;   /* ผลักไปทางขวา */
-  margin-right: auto;  /* ถ้าอยากกึ่งกลาง */
-}
-
-.a01 .text {
-             /* เว้นระยะใต้รูป */
-  font-size: 28px;
-  font-weight: bold;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px #000;
-  text-align: center;          /* กึ่งกลางข้อความ */
-  position: static;            /* ไม่ต้อง absolute */
-  transform: none;             /* ไม่ต้อง translate */
-  margin-top: -370px;
-}
-#--------------------------------------------------------------------------------------------------
-  .a02 {
-  text-align: center; /* จัดรูปให้อยู่กึ่งกลางแนวนอน */
-  margin-top: 200px;   /* เว้นระยะด้านบน */
-}
-
-.a02 img {
-  width: 460px;   /* ปรับตามขนาดที่ต้องการ */
-  display: block;
-  text-align: center; /* จัดรูปให้อยู่กึ่งกลางแนวนอน */
-  margin-top: -100px;
-  margin-left: 17.75%;   /* ผลักไปทางขวา */
-  margin-right: auto;  /* ถ้าอยากกึ่งกลาง */
-}
-
-.a02 .text {
-             /* เว้นระยะใต้รูป */
-  font-size: 28px;
-  font-weight: bold;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px #000;
-  text-align: center;          /* กึ่งกลางข้อความ */
-  position: static;            /* ไม่ต้อง absolute */
-  transform: none;             /* ไม่ต้อง translate */
-  margin-top: 500px;
-}
-
-  .good{background:rgba(34,197,94,.15);color:var(--good);border:1px solid rgba(34,197,94,.4)}
-  .mid{ background:rgba(245,158,11,.2);color:var(--accent); border:1px solid rgba(245,158,11,.4)}
-  .bad{ background:rgba(239,68,68,.2);color:var(--bad); border:1px solid rgba(239,68,68,.4)}
-  .meaning{color:#fff8dc;font-size:18px}
-  .advice{color:#fcd34d;font-size:16px}
-  .center{display:grid;place-items:center}
-  /* --- กระบอกเซียมซี + แอนิเมชัน --- */
-  .tube-box{height:220px;display:grid;place-items:center}
-  .tube{width:120px;filter:drop-shadow(0 12px 24px rgba(0,0,0,.45))}
-  .shake{animation:shake .7s cubic-bezier(.36,.07,.19,.97) both}
-  @keyframes shake{
-    10%,90%{transform:translateX(-1px) rotate(-0.6deg)}
-    20%,80%{transform:translateX(2px)  rotate(0.6deg)}
-    30%,50%,70%{transform:translateX(-4px) rotate(-1.2deg)}
-    40%,60%{transform:translateX(4px)  rotate(1.2deg)}
-  }
-  .hidden{display:none}
-  footer{
-    margin-top:10px;
-    color:var(--muted);
-    font-size:14px;
-    text-align:center;
-  }
-
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>เซียมซีวรรณคดีไทย</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main class="wrap">
-  <div class="card">
+  <!-- ฝุ่นทองระยิบ -->
+  <div class="bg-dust"></div>
+
+  <div class="stage">
+    <!-- กรอบมุม -->
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+
+    <!-- โคมแดง -->
+    <div class="lanterns">
+      <div class="lantern l1"><i></i><b class="top"></b><b class="bot"></b></div>
+      <div class="lantern l2"><i></i><b class="top"></b><b class="bot"></b></div>
+    </div>
+
+    <!-- ป้ายหัว -->
     <div class="a01">
       <img src="images/a01.png" alt="ป้ายหัว">
-      <div class="text">เซียมซีวรรณคดีไทย</div> 
+      <div class="text gold-shimmer">เซียมซีวรรณคดีไทย</div>
     </div>
 
+    <!-- ป้ายข้อความกลาง -->
     <div class="a02">
-      <img src="images/a02.png" alt="ป้ายหัว">
-      <div class="text">เซียมซีวรรณคดีไทย</div> 
+      <img src="images/a02.png" alt="ป้ายเนื้อหา">
+      <div class="text">หลับตาตั้งจิตอธิษฐาน<br>สิ่งศักดิ์สิทธิ์<br>สิ่งศักดิ์สิทธิ์<br>สิ่งศักดิ์สิทธิ์</div>
     </div>
-    
-    
 
+    <div class="divider"></div>
 
+    <!-- ป้ายคำเตือน (ขวาหน้าจอ) -->
+    <div id="warnNotice">
+      <img src="images/a02.png" alt="คำเตือน">
+      <div class="text">คำเตือน<br>เป็นความเชื่อส่วนบุคคล<br>โปรดอ่านเพื่อความสบายใจ</div>
+    </div>
 
+    <!-- โซนกระบอก -->
+    <main class="wrap">
+      <div class="card">
+        <!-- หน้าก่อนออกผล -->
+        <section class="section center" id="shakeSection">
+          <div class="tube-area" id="tubeArea">
+            <img id="tubeSvg" class="tube-img" src="images/cat01.png" alt="กระบอกเซียมซีแมว">
+            <div class="fx-burst"></div>
+            <div class="coins" id="coins"></div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button id="shakeBtn" type="button">🪄 เขย่าเซียมซี</button>
+            <button id="skipBtn" class="ghost" type="button">ข้ามไปดูผลเลย</button>
+          </div>
+        </section>
 
-
-    <!-- หน้าก่อนออกผล: เขย่ากระบอก -->
-    <section class="section center" id="shakeSection">
-      <div class="tube-box">
-        
-        <!-- SVG กระบอกเซียมซี -->
-        <svg class="tube" id="tubeSvg" viewBox="0 0 120 220" xmlns="http://www.w3.org/2000/svg" aria-label="กระบอกเซียมซี">
-          <defs>
-            <linearGradient id="wood" x1="0" x2="1">
-              <stop offset="0%" stop-color="#9a6324"/>
-              <stop offset="50%" stop-color="#b97a3b"/>
-              <stop offset="100%" stop-color="#8b5a2b"/>
-            </linearGradient>
-          </defs>
-          <!-- ตัวกระบอก -->
-          <rect x="20" y="30" width="80" height="150" rx="14" fill="url(#wood)" stroke="#5c3b1e" stroke-width="3"/>
-          <!-- ปากกระบอก -->
-          <ellipse cx="60" cy="30" rx="40" ry="12" fill="#c28a52" stroke="#5c3b1e" stroke-width="3"/>
-          <!-- ก้นกระบอก (เงา) -->
-          <ellipse cx="60" cy="180" rx="38" ry="10" fill="#7a4a22" opacity=".6"/>
-          <!-- ไม้เซียมซีโผล่ -->
-          <rect x="35" y="5" width="12" height="40" rx="3" fill="#fcd34d" stroke="#a16207"/>
-          <rect x="53" y="-2" width="12" height="47" rx="3" fill="#fde68a" stroke="#a16207"/>
-          <rect x="71" y="2" width="12" height="43" rx="3" fill="#facc15" stroke="#a16207"/>
-        </svg>
+        <!-- หน้าผลการทำนาย -->
+        <section class="section hidden" id="resultSection">
+          <div class="title">
+            <span id="stick">ไม้เลข —</span>
+            <span id="tier" class="badge mid">กำลังสุ่ม…</span>
+          </div>
+          <p id="meaning" class="meaning">ผลลัพธ์จะปรากฏที่นี่</p>
+          <p id="advice" class="advice">คำแนะนำจะแสดงในบรรทัดนี้</p>
+          <div class="row" style="margin-top:8px">
+            <button id="backBtn" class="ghost" type="button">ย้อนกลับ</button>
+            <button id="againBtn" type="button">เขย่าอีกครั้ง</button>
+            <button id="copyBtn" class="ghost" type="button">คัดลอกผล</button>
+          </div>
+        </section>
       </div>
-      <div class="row">
-        <button id="shakeBtn">🪄 เขย่าเซียมซี</button>
-        <button class="ghost" id="skipBtn">ข้ามไปดูผลเลย</button>
-      </div>
-    </section>
-
-    <!-- หน้าผลการทำนาย -->
-    <section class="section hidden" id="resultSection">
-      <div class="title">
-        <span id="stick">ไม้เลข —</span>
-        <span id="tier" class="badge mid">กำลังสุ่ม…</span>
-      </div>
-      <p id="meaning" class="meaning">ผลลัพธ์จะปรากฏที่นี่</p>
-      <p id="advice"  class="advice">คำแนะนำจะแสดงในบรรทัดนี้</p>
-      <div class="row" style="margin-top:8px">
-        <button id="againBtn">เขย่าอีกครั้ง</button>
-        <button id="copyBtn" class="ghost">คัดลอกผล</button>
-      </div>
-    </section>
-
-    <footer>Frontend only • ไม่มีการบันทึกข้อมูล</footer>
+    </main>
   </div>
-</main>
 
-<script>
-  // ====== ชุดคำทำนายเริ่มต้น ======
-  const FORTUNES = [
-    { id: 1,  tier: "ดีมาก",    meaning: "ดวงขึ้น งาน เงิน ความรักไปทางเดียวกัน", advice: "โฟกัสสิ่งสำคัญ 1–2 เรื่อง จะเห็นผลชัด" },
-    { id: 2,  tier: "ดี",       meaning: "มีข่าวดีเข้ามา แต่ต้องลงมือก่อน",         advice: "เริ่มวันนี้ แม้ก้าวเล็ก ๆ ก็มีค่า" },
-    { id: 3,  tier: "ปานกลาง", meaning: "นิ่ง ๆ ไว้ก่อน จังหวะยังไม่เปิด",          advice: "รอข้อมูลครบแล้วค่อยตัดสินใจ" },
-    { id: 4,  tier: "โชคดี",    meaning: "มีผู้ใหญ่สนับสนุนแบบไม่คาดคิด",           advice: "ขอบคุณและต่อยอดความช่วยเหลือนั้น" },
-    { id: 5,  tier: "ระวัง",    meaning: "เรื่องเล็กอาจกลายเป็นเรื่องใหญ่",         advice: "ทบทวนรายละเอียดสัญญา/แผนอีกครั้ง" },
-    { id: 6,  tier: "สดใส",    meaning: "ความคิดสร้างสรรค์พุ่ง ปิดงานค้างได้",     advice: "บล็อกเวลาโฟกัส 45–60 นาที" },
-    { id: 7,  tier: "เฮง ๆ",   meaning: "มีลุ้นเรื่องเงินเล็ก ๆ",                    advice: "วินัยสำคัญกว่าโชค อย่าเสี่ยงเกินจำเป็น" },
-    { id: 8,  tier: "นิ่งดี",   meaning: "ไม่มีเรื่องใหญ่ ไปเรื่อย ๆ",                advice: "ดูแลการนอนและสุขภาพให้สม่ำเสมอ" },
-    { id: 9,  tier: "ก้าวหน้า", meaning: "ผลงานเริ่มเด่น มีคนเห็นคุณค่า",           advice: "สื่อสารผลลัพธ์ให้ชัด เพิ่มอิมแพ็ก" },
-    { id: 10, tier: "ช้าแต่ชัวร์", meaning: "ความสำเร็จมาแบบค่อยเป็นค่อยไป",      advice: "แตกเป้าหมายใหญ่เป็นงานย่อย" }
-  ];
-
-  // ====== DOM ======
-  const shakeSection  = document.getElementById('shakeSection');
-  const resultSection = document.getElementById('resultSection');
-  const tubeSvg       = document.getElementById('tubeSvg');
-  const shakeBtn      = document.getElementById('shakeBtn');
-  const skipBtn       = document.getElementById('skipBtn');
-  const againBtn      = document.getElementById('againBtn');
-  const copyBtn       = document.getElementById('copyBtn');
-
-  const stickEl   = document.getElementById('stick');
-  const tierEl    = document.getElementById('tier');
-  const meaningEl = document.getElementById('meaning');
-  const adviceEl  = document.getElementById('advice');
-
-  // ====== Utils ======
-  const rand = (n) => Math.floor(Math.random() * n);
-  const tierClass = (t) => ["ดีมาก","เฮง ๆ","โชคดี","สดใส","ก้าวหน้า"].includes(t) ? "good" : (t==="ระวัง"?"bad":"mid");
-
-  function drawFortune(){
-    const f = FORTUNES[rand(FORTUNES.length)];
-    stickEl.textContent = `ไม้เลข ${f.id}`;
-    tierEl.textContent  = f.tier;
-    tierEl.className = `badge ${tierClass(f.tier)}`;
-    meaningEl.textContent = f.meaning;
-    adviceEl.textContent  = "คำแนะนำ: " + f.advice;
-  }
-
-  function goResult(){
-    shakeSection.classList.add('hidden');
-    resultSection.classList.remove('hidden');
-  }
-
-  // ====== Actions ======
-  shakeBtn.addEventListener('click', () => {
-    tubeSvg.classList.remove('shake'); void tubeSvg.offsetWidth;
-    tubeSvg.classList.add('shake');
-    setTimeout(() => { drawFortune(); goResult(); }, 800);
-  });
-
-  skipBtn.addEventListener('click', () => { drawFortune(); goResult(); });
-
-  againBtn.addEventListener('click', () => {
-    resultSection.classList.add('hidden');
-    shakeSection.classList.remove('hidden');
-    tubeSvg.classList.remove('shake'); void tubeSvg.offsetWidth;
-    tubeSvg.classList.add('shake');
-    setTimeout(() => { drawFortune(); goResult(); }, 800);
-  });
-
-  copyBtn.addEventListener('click', () => {
-    const text = `${stickEl.textContent} • ${tierEl.textContent}\n${meaningEl.textContent}\n${adviceEl.textContent}`;
-    navigator.clipboard.writeText(text).then(() => {
-      copyBtn.textContent = "คัดลอกแล้ว ✓";
-      setTimeout(() => copyBtn.textContent = "คัดลอกผล", 1200);
-    });
-  });
-</script>
+  <script defer src="app.js"></script>
 </body>
 </html>
