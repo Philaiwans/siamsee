@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>เซียมซีวรรณคดีไทย — เขย่าเซียมซี</title>
+
+<style>
+  :root{
+    /* ===== ปรับตำแหน่ง/ขนาดได้ที่นี่ ===== */
+    --hero-width: 67vw;
+    --hero-max:   800px;
+
+    --anim-bottom: 40%;
+    --anim-left:   50%;
+    --tube-width:  320px;
+
+    /* เวลาอนิเมชัน */
+    --tube-ms:   1400ms;
+    --launch-ms: 1200ms;
+    --gap-after: 500ms;
+  }
+
+  html,body{height:100%;margin:0}
+  body{
+    display:flex; justify-content:center; align-items:center;
+    background: radial-gradient(circle at 50% -20%, #b91c1c 0%, #7a0a0a 55%, #4a0000 100%);
+    font-family:"TH Sarabun New","Sarabun",system-ui,sans-serif;
+    color:#ffe8b0;
+  }
+
+  /* ===== เฟรมรูปหลัก (เหมือนหน้าแรก) ===== */
+  .hero-wrapper{
+    position:relative;
+    width:var(--hero-width);
+    max-width:var(--hero-max);
+    
+  }
+  .hero-img{
+    width:100%; height:auto; display:block;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,.4));
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4); /* เงาใหญ่ */
+    border: 3px solid rgba(255, 255, 255, 0.4); /* ขอบบาง ๆ โปร่ง ๆ */
+    border-radius: 24px; /* ปรับค่ามากขึ้นเพื่อโค้งมากขึ้น */
+  }
+
+  /* ===== โซนอนิเมชัน ซ้อนอยู่บนรูป ===== */
+  .anim{
+    position:absolute;
+    left: var(--anim-left);
+    bottom: var(--anim-bottom);
+    transform: translateX(-50%);
+    width: var(--tube-width);
+    pointer-events:none;
+    z-index:2;
+  }
+
+  .tube-wrap{
+    position:relative;
+    width:100%;
+    height: calc(var(--tube-width) * 1.45);
+    display:grid; place-items:end center;
+    filter: drop-shadow(0 22px 40px rgba(0,0,0,.45));
+    isolation:isolate;
+    will-change: transform;
+  }
+
+  /* เส้นเงาริมบาง ๆ วางบนท่อ ไม่ล้น */
+  .tube-wrap::after{
+    content:"";
+    position:absolute;
+    left:50%; transform:translateX(-50%);
+    bottom:38.8%;
+    width:64%;
+    height:10px;
+    border-radius:999px;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(0,0,0,.18), transparent 70%);
+    z-index:6;
+    pointer-events:none;
+  }
+
+  /* กระบอกอยู่ชั้นบนสุด */
+  .tube{
+    width:100%; height:auto; display:block;
+    transform-origin:50% 15%;
+    position:relative; z-index:5;
+  }
+  .fx-burst{ z-index:3; }
+
+  /* ปากกระบอก: คลิปให้ลึก + เก็บเศษไม้ */
+  .mouth{
+    position:absolute;
+    left:50%; transform:translateX(-50%);
+    bottom:39%;
+    width:70%;
+    height:86px;
+    overflow:hidden;
+    clip-path: ellipse(60% 62% at 50% 110%);
+    z-index:4;
+  }
+  .mouth::before{ content:none !important; }
+
+  /* ไม้ในปาก */
+  .stick{
+    --rot: 0deg; --x: 0px; --y: 0px;
+    position:absolute; bottom:0; left:50%;
+    transform: translateX(-50%) translate(var(--x),var(--y)) rotate(var(--rot));
+    width:16px; height:108px; border-radius:10px 10px 4px 4px;
+    background:linear-gradient(180deg,#fde7b8,#f5d79a);
+    box-shadow: inset 0 0 0 1px rgba(120,80,0,.35), 0 4px 10px rgba(0,0,0,.2);
+    z-index:1;
+  }
+  .stick::after{
+    content:attr(data-n);
+    position:absolute; top:6px; left:50%;
+    transform:translateX(-50%);
+    font-weight:900; color:#3a2a00; font-size:14px;
+  }
+
+  /* สั่น “ทั้งชุด” */
+  .shake{ animation:shake var(--tube-ms) cubic-bezier(.36,.07,.19,.97) both }
+  @keyframes shake{
+    0%,100%{ transform:rotate(0) }
+    10%,90%{ transform:translateX(-1px) rotate(-1.8deg) }
+    20%,80%{ transform:translateX( 2px) rotate( 1.8deg) }
+    30%,50%,70%{ transform:translateX(-4px) rotate(-3.2deg) }
+    40%,60%{ transform:translateX( 4px) rotate( 3.2deg) }
+  }
+
+  /* เอฟเฟกต์ “เขย่าๆ” */
+  .shake-text{
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%) translate(var(--dx,0),var(--dy,0)) rotate(var(--rot,0));
+    color:#ffd76a; font-weight:900; text-shadow:0 0 8px rgba(0,0,0,.7);
+    opacity:0; white-space:nowrap; user-select:none;
+    font-size:clamp(14px,2.8vw,18px);
+    animation:burst var(--dur,900ms) ease-in-out infinite;
+  }
+  @keyframes burst{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+
+  /* ไม้ที่เด้ง (เวอร์ชันนอกคลิป) */
+  .launch-free{
+    animation: launchFree var(--launch-ms) cubic-bezier(.17,.67,.32,1.3) forwards;
+  }
+  @keyframes launchFree{
+    0%   { transform: translate(0,0) rotate(0deg); opacity:1 }
+    35%  { transform: translate(0,-90px) rotate(-18deg) }
+    70%  { transform: translate(10px,-150px) rotate(10deg) }
+    100% { transform: translate(20px,-40px) rotate(0deg); opacity:1 }
+  }
+
+  /* ===== ของตกแต่ง (ล้อมกระบอก) ===== */
+  .decor{
+    position:absolute;
+    width:clamp(310px, 12%, 120px);
+    opacity:.9;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
+    pointer-events:none;
+    z-index:1;
+    animation:floatIcon 7s ease-in-out infinite;
+  }
+  .decor--lt{ top:10%; left:6%; }
+  .decor--rt{ top:9%; right:7%; transform:scaleX(-1); }
+  .decor--rb{
+    bottom:5%; right:12%;
+    width:clamp(210px, 15%, 150px);
+    opacity:1;
+    animation: floatIcon 6s ease-in-out infinite;
+  }
+  @keyframes floatIcon{
+    0%,100%{ transform:translateY(0) }
+    50%{ transform:translateY(-6px) }
+  }
+  .decor--rt{ animation: floatIcon 7.4s ease-in-out infinite; }
+  .decor--lt{ animation-duration: 6.8s; }
+  .decor--rb{ animation-duration: 7.2s; }
+
+  @media (max-width:560px){
+    .decor{ width:clamp(56px, 18vw, 100px) }
+    .decor--rb{ width:clamp(64px, 22vw, 120px) }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .tube-wrap, .decor{ animation:none }
+  }
+
+  /* ===== ข้อความรอใต้กระบอก ===== */
+ .loading{
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  bottom:-38px;                 /* ใต้กระบอก */
+  font-weight:900;
+  font-size:clamp(18px, 3vw, 22px);
+  color:#fff8d0;                /* ขาวอมเหลือง สว่างกว่า */
+  text-shadow:
+     0 0 3px #000,
+     0 0 6px #000,
+     0 2px 6px rgba(0,0,0,.6);  /* ✅ เน้นให้อ่านง่ายขึ้น */
+  background:rgba(0,0,0,.35);   /* ✅ พื้นหลังดำโปร่งแสง */
+  padding:4px 12px;
+  border-radius:10px;
+  letter-spacing:.6px;
+  pointer-events:none;
+  white-space:nowrap;
+  z-index:7;
+}
+.loading .dots{
+  display:inline-block;
+  width:2em;
+  text-align:left;
+}
+
+</style>
+</head>
+<body>
+  <div class="hero-wrapper">
+    <!-- รูปหลักของหน้า 2 -->
+    <img src="images/web_04.png" alt="ภาพหน้าเขย่า" class="hero-img" />
+
+    <!-- ชุดอนิเมชัน (ซ้อนทับบนรูป) -->
+    <section class="anim">
+      <div class="tube-wrap" id="tubeWrap">
+        <div class="fx-burst" id="burst"></div>
+        <div class="mouth" id="mouth"></div>
+        <img src="images/web_03.png" alt="กระบอกเซียมซี" id="tube" class="tube" />
+        <!-- overlay สำหรับปล่อยไม้ (อยู่นอก clip-path) -->
+        <div id="overlay" style="position:absolute; inset:0; z-index:6; pointer-events:none;"></div>
+
+        <!-- ✅ ข้อความรอ -->
+        <div class="loading">รอสักครู่<span class="dots" id="dots">.</span></div>
+      </div>
+    </section>
+
+    <!-- ✅ ของตกแต่ง -->
+    <img src="images/iconram01.png" alt="นักรบถือคันศร" class="decor decor--lt" />
+    <img src="images/iconram02.png" alt="ยักษ์หลายกร" class="decor decor--rt" />
+    <img src="images/iconram03.png" alt="หนุมาน" class="decor decor--rb" />
+  </div>
+
+<script>
+(() => {
+  const tubeWrap = document.getElementById('tubeWrap');
+  const mouth    = document.getElementById('mouth');
+  const burst    = document.getElementById('burst');
+  const overlay  = document.getElementById('overlay');
+  const dotsEl   = document.getElementById('dots');
+
+  const TOTAL   = 28;
+  const VISIBLE = 16;
+
+  const css = getComputedStyle(document.documentElement);
+  const tShake  = parseInt(css.getPropertyValue('--tube-ms'));
+  const tLaunch = parseInt(css.getPropertyValue('--launch-ms'));
+  const tGap    = parseInt(css.getPropertyValue('--gap-after'));
+
+  const rand = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+
+  /* ✅ จุดวิ่ง รอสักครู่… */
+  let c = 1;
+  setInterval(()=>{ dotsEl.textContent = '.'.repeat((c++ % 3) + 1); }, 420);
+
+  function layoutSticks(){
+    mouth.innerHTML = "";
+    const used = new Set();
+    while(used.size < VISIBLE) used.add(rand(1,TOTAL));
+    [...used].forEach(n => {
+      const s = document.createElement('div');
+      s.className = 'stick';
+      s.dataset.n = n;
+      s.style.setProperty('--rot', `${rand(-18,18)}deg`);
+      s.style.setProperty('--x',   `${rand(-40,40)}px`);
+      s.style.setProperty('--y',   `${rand(0,8)}px`);
+      mouth.appendChild(s);
+    });
+  }
+
+  function burstShakeText(){
+    burst.innerHTML = "";
+    for(let i=0;i<5;i++){
+      const t = document.createElement('span');
+      t.className = 'shake-text';
+      t.style.setProperty('--dx', `${Math.floor(Math.random()*180-90)}px`);
+      t.style.setProperty('--dy', `${Math.floor(Math.random()*-100)}px`);
+      t.style.setProperty('--rot', `${Math.floor(Math.random()*30-15)}deg`);
+      t.style.setProperty('--dur', `${820+Math.floor(Math.random()*220)}ms`);
+      t.textContent = 'เขย่าๆ';
+      burst.appendChild(t);
+    }
+    setTimeout(()=> burst.innerHTML = "", 1500);
+  }
+
+  function startShake(){
+    layoutSticks();
+    burstShakeText();
+
+    // เขย่าทั้งชุด
+    tubeWrap.classList.remove('shake'); void tubeWrap.offsetWidth;
+    tubeWrap.classList.add('shake');
+
+    // หลังสั่นแล้วสุ่มปล่อยไม้
+    setTimeout(launchOne, tShake);
+  }
+
+  function launchOne(){
+    const sticks = Array.from(mouth.querySelectorAll('.stick'));
+    if(!sticks.length){ layoutSticks(); }
+    const victim = sticks[Math.floor(Math.random()*sticks.length)];
+
+    // ตำแหน่งไม้เทียบกับ tubeWrap
+    const wrapRect = tubeWrap.getBoundingClientRect();
+    const vRect    = victim.getBoundingClientRect();
+
+    // โคลนไม้ไป overlay (นอก clip) เพื่อปล่อย
+    const free = victim.cloneNode(true);
+    const stickW = vRect.width, stickH = vRect.height;
+
+    free.style.position = 'absolute';
+    free.style.left = (vRect.left - wrapRect.left) + 'px';
+    free.style.top  = (vRect.top  - wrapRect.top ) + 'px';
+    free.style.transform = 'translate(0,0)';
+    free.style.width  = stickW + 'px';
+    free.style.height = stickH + 'px';
+    free.classList.add('launch-free');
+    overlay.appendChild(free);
+
+    // ซ่อนต้นฉบับในปาก
+    victim.style.visibility = 'hidden';
+
+    // เก็บเลขไม้ไว้ใช้หน้า 3
+    try{ sessionStorage.setItem('siemsiStick', victim.dataset.n); }catch(e){}
+
+    // ไปหน้าผลลัพธ์
+    setTimeout(()=>{ window.location.href = 'result.html'; }, tLaunch + tGap);
+  }
+
+  window.addEventListener('load', startShake);
+})();
+</script>
+</body>
+</html>
